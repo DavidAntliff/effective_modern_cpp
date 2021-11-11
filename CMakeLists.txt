@@ -12,8 +12,18 @@ add_executable(effective_modern_cpp
 target_link_libraries(effective_modern_cpp LINK_PUBLIC pthread)
 
 
+# Google Test
+include(FetchContent)
+FetchContent_Declare(
+  	googletest
+  	GIT_REPOSITORY https://github.com/google/googletest.git
+  	GIT_TAG release-1.11.0
+)
+FetchContent_MakeAvailable(googletest)
+include(GoogleTest)
+
 enable_testing()
-find_package(GTest REQUIRED)
+#find_package(GTest REQUIRED)
 
 add_executable(tests
         code.cc
@@ -22,11 +32,6 @@ add_executable(tests
 # -Wno-missing-braces due to clang bug: https://stackoverflow.com/questions/13905200/is-it-wise-to-ignore-gcc-clangs-wmissing-braces-warning
 target_compile_options(tests PRIVATE -Wall -Wextra -Wno-missing-braces -Wno-missing-field-initializers)
 
-#target_include_directories(tests PRIVATE .)
+target_link_libraries(tests LINK_PUBLIC gtest gtest_main)
 
-target_link_libraries(tests LINK_PUBLIC GTest::GTest GTest::Main)
-
-# Google Test
-enable_testing()
-find_package(GTest REQUIRED)
 gtest_discover_tests(tests)
